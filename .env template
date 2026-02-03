@@ -1,0 +1,3 @@
+echo "DB_URL=jdbc:mysql://localhost:3306/nombre_tu_db" > .env.template
+echo "DB_USER=tu_usuario_aqui" >> .env.template
+echo "DB_PASS=tu_password_aqui" >> .env.template
