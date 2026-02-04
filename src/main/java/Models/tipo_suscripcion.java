@@ -1,0 +1,65 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Models;
+
+/**
+ *
+ * @author josel
+ */
+public class tipo_suscripcion {
+    private int tipo_id;
+    private String nombre;
+    private double precio;
+    private int duracion_meses;
+
+    public tipo_suscripcion(int tipo_id, String nombre, double precio, int duracion_meses) {
+        this.tipo_id = tipo_id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.duracion_meses = duracion_meses;
+        
+        
+    }
+
+    public int getTipo_id() {
+        return tipo_id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public int getDuracion_meses() {
+        return duracion_meses;
+    }
+
+    public void setTipo_id(int tipo_id) {
+        this.tipo_id = tipo_id;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public void setDuracion_meses(int duracion_meses) {
+        this.duracion_meses = duracion_meses;
+    }
+
+    @Override
+    public String toString() {
+        return "tipo_suscripcion{" + "tipo_id=" + tipo_id + ", nombre=" + nombre + ", precio=" + precio + ", duracion_meses=" + duracion_meses + '}';
+    }
+    
+    
+    
+}
