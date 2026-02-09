@@ -7,8 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Models.Filmografia;
 import java.sql.Date;
+import Models.Filmografia;
 
 /**
  *
@@ -38,11 +38,67 @@ public class DAOFilmografia {
     
     //MÉTODOS
     
-    public void Insert_Filmografia(String titulo, Date fecha_estreno,
-            String sinopsis, int pais_id, int clasificacion_id){
+    private Filmografia crarFilmo(ResultSet rs) throws SQLException{
     
         try{
-            PreparedStatement stmt = this.conexion.prepareStatement(this.INSERT);
+            Filmografia filmo = new Filmografia(rs.getInt("id"),rs.getString("titulo"),rs.getDate("fecha_estreno"),
+                    rs.getString("sinopsis"),rs.getInt("pais_id"),rs.getInt("clasificacion_id"));
+            return filmo;
+        } catch(SQLException e){
+            
+            throw new SQLException("Error creando Filmo.",e);
+        }
+    }
+    
+    private void cerrarEstados(PreparedStatement stmt, ResultSet rs) throws SQLException{
+        
+        if (stmt != null){ try{
+                
+                stmt.close();
+            } catch(SQLException e){
+                throw new SQLException("Error cerrando statement.",e);
+            }
+        }
+            
+            if (rs != null){ try{
+                
+                rs.close();
+            } catch(SQLException e){
+                throw new SQLException("Error cerrando resulset.",e);
+            }
+        }
+        
+    }
+    
+    private void cerrarEstados(PreparedStatement stmt) throws SQLException{
+        
+        if (stmt != null){ try{
+                
+                stmt.close();
+            } catch(SQLException e){
+                throw new SQLException("Error cerrando statement.",e);
+            }
+        }
+    }
+    
+    private void cerrarEstados(ResultSet rs) throws SQLException{
+                    
+            if (rs != null){ try{
+                
+                rs.close();
+            } catch(SQLException e){
+                throw new SQLException("Error cerrando resulset.",e);
+            }
+        }
+        
+    }
+    
+    public void Insert_Filmografia(String titulo, Date fecha_estreno,
+            String sinopsis, int pais_id, int clasificacion_id) throws SQLException{
+    
+        PreparedStatement stmt = null;
+        try{
+            stmt = this.conexion.prepareStatement(this.INSERT);
             stmt.setString(1, titulo);
             stmt.setDate(2,fecha_estreno);
             stmt.setString(3,sinopsis);
@@ -51,76 +107,84 @@ public class DAOFilmografia {
             stmt.executeUpdate();
         } catch(SQLException e){
             
-            System.out.println("Error en INSERT filmo."+e.getMessage());
+            System.out.println("Error en INSERT filmografia."+e.getMessage());
+        } finally{
+        
+            cerrarEstados(stmt);
         }
     };
-    public void Delete_Filmografia(int id){
+    public void Delete_Filmografia(int id) throws SQLException{
     
+        PreparedStatement stmt = null;
         try{
-            PreparedStatement stmt = this.conexion.prepareStatement(this.DELETE);
+            stmt = this.conexion.prepareStatement(this.DELETE);
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch(SQLException e){
             
-            System.out.println("Error en DELETE filmo."+e.getMessage());
+            System.out.println("Error en DELETE filmografia."+e.getMessage());
+        } finally{
+        
+            cerrarEstados(stmt);
         }
     };
     public void Update_Filmografia(String titulo, Date fecha_estreno,
-            String sinopsis, int pais_id, int clasificacion_id){
+            String sinopsis, int pais_id, int clasificacion_id, int id) throws SQLException{
     
+        PreparedStatement stmt = null;
         try{
-            PreparedStatement stmt = this.conexion.prepareStatement(this.UPDATE);
+            stmt = this.conexion.prepareStatement(this.UPDATE);
             stmt.setString(1, titulo);
             stmt.setDate(2,fecha_estreno);
             stmt.setString(3,sinopsis);
             stmt.setInt(4,pais_id);
             stmt.setInt(5,clasificacion_id);
+            stmt.setInt(6, id);
             stmt.executeUpdate();
         } catch(SQLException e){
             
-            System.out.println("Error en list all filmo."+e.getMessage());
+            System.out.println("Error en UPDATE filmografia."+e.getMessage());
+        } finally{
+        
+            cerrarEstados(stmt);
         }
     };
-    public void Listall_Filmografia(){
+    public void Listall_Filmografia() throws SQLException{
         
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try{
-            PreparedStatement stmt = this.conexion.prepareStatement(this.LISTALL);
-            ResultSet rs = stmt.executeQuery();
-            Filmografia filmo = new Filmografia();
+            stmt = this.conexion.prepareStatement(this.LISTALL);
+            rs = stmt.executeQuery();
             while(rs.next()){
-                
-                filmo.setId(rs.getInt("id"));
-                filmo.setTitulo(rs.getString("titulo"));
-                filmo.setFecha_estreno(rs.getDate("fecha_estreno"));
-                filmo.setSinopsis(rs.getString("sinopsis"));
-                filmo.setPais_id(rs.getInt("pais_id"));
-                filmo.setClasificacion_id(rs.getInt("clasificacion_id"));
-                System.out.println(filmo.toString());
+           
+                System.out.println(crarFilmo(rs).toString());
             }
         } catch(SQLException e){
             
-            System.out.println("Error en list all filmo."+e.getMessage());
+            System.out.println("Error en LIST ALL filmografia."+e.getMessage());
+        } finally{
+        
+            cerrarEstados(stmt, rs);
         }
     };
-    public void Listone_Filmografia(int id){
+    public void Listone_Filmografia(int id) throws SQLException{
     
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try{
-            PreparedStatement stmt = this.conexion.prepareStatement(this.LISTONE);
+            stmt = this.conexion.prepareStatement(this.LISTONE);
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            Filmografia filmo = new Filmografia();
+            rs = stmt.executeQuery();
             rs.next();
-            filmo.setId(rs.getInt("id"));
-            filmo.setTitulo(rs.getString("titulo"));
-            filmo.setFecha_estreno(rs.getDate("fecha_estreno"));
-            filmo.setSinopsis(rs.getString("sinopsis"));
-            filmo.setPais_id(rs.getInt("pais_id"));
-            filmo.setClasificacion_id(rs.getInt("clasificacion_id"));
-            System.out.println(filmo.toString());
+            System.out.println(crarFilmo(rs).toString());
             
         } catch(SQLException e){
             
-            System.out.println("Error en list all filmo."+e.getMessage());
+            System.out.println("Error en LIST ONE filmo."+e.getMessage());
+        } finally{
+        
+            cerrarEstados(stmt, rs);
         }
     };
 }
